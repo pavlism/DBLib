@@ -1,0 +1,24 @@
+{
+  "name": "pavlism-dblib",
+  "version": "0.0.1",
+  "description": "A JS Lib for dealing databases",
+  "main": "DBLib.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pavlism/DBLib.git"
+  },
+  "keywords": [
+    "DB",
+    "database",
+    "pavlism"
+  ],
+  "author": "Mark Pavlis",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/pavlism/DBLib/issues"
+  },
+  "homepage": "https://github.com/pavlism/DBLib#readme"
+}
