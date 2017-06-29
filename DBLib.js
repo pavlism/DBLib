@@ -1,11 +1,11 @@
 //A library dedicated to Databse functionality
 
-var Lib = require("pavlism-lib");
+//var Lib = require("pavlism-lib");
 var Logger = require("pavlism-logger");
 
-var log = new Logger('Lib.DB.js', Logger.level.error);
+var log = new Logger('DB.js', Logger.level.error);
 
-		Lib.DB = {};
+		DB = {};
 
 		/**
 		 * This will take todays date and adjust it based on numDaysMod (posative or negative) and 
@@ -14,8 +14,8 @@ var log = new Logger('Lib.DB.js', Logger.level.error);
 		 * @param numDaysMod {int} The number of days from today to transform
 		 * @return {string} Returns SQL formatted date string
 		 */
-		Lib.DB.getSQLFormatedDate = function (numDaysMod) {
-			numDaysMod = Lib.JS.setDefaultParameter(numDaysMod, 0);
+		DB.getSQLFormatedDate = function (numDaysMod) {
+			numDaysMod = JS.setDefaultParameter(numDaysMod, 0);
 			var date = new Date(new Date().getTime() + 24 * 60 * 60 * 1000 * numDaysMod);
 			return date;
 		};
@@ -29,9 +29,9 @@ var log = new Logger('Lib.DB.js', Logger.level.error);
 		 * @param reactiveObject {Object} The obejct to recived the SQL data
 		 * @return {Object} Returns objectTo with added data
 		 */
-		Lib.DB.mapSQLObject = function (SQLRow, reactiveObject) {
+		DB.mapSQLObject = function (SQLRow, reactiveObject) {
 			log.trace("mapObject");
-			if (Lib.JS.isUndefined(SQLRow)) {
+			if (JS.isUndefined(SQLRow)) {
 				return {};
 			}
 
@@ -48,7 +48,7 @@ var log = new Logger('Lib.DB.js', Logger.level.error);
 					} else if (typeof SQLRow[property] === "boolean") {
 						reactiveObject[property] = SQLRow[property];
 					} else if ($.type(SQLRow[property]) === "date") {   //if the data is a sql date
-						reactiveObject[property] = Lib.DB.ConvertSQLDate(SQLRow[property]);
+						reactiveObject[property] = DB.ConvertSQLDate(SQLRow[property]);
 					} else {
 						log.error("Data type not handled");
 						reactiveObject[property] = "";
@@ -63,7 +63,7 @@ var log = new Logger('Lib.DB.js', Logger.level.error);
 		 * @param SQLResults {array} the SQL results
 		 * @param reactiveArray {array} the array to move the results to 
 		 */
-		Lib.DB.mapSQLArrays = function (SQLResults, reactiveArray) {
+		DB.mapSQLArrays = function (SQLResults, reactiveArray) {
 			log.trace("mapArrays");
 			if (typeof SQLResults === 'undefined') {
 				reactiveArray = {};
@@ -74,7 +74,7 @@ var log = new Logger('Lib.DB.js', Logger.level.error);
 			var arrayCounter = 0;
 
 			for (arrayCounter = 0; arrayCounter < SQLResults.length; arrayCounter++) {
-				var obejct = Lib.DB.mapSQLObject(SQLResults[arrayCounter], SQLResults[arrayCounter]);
+				var obejct = DB.mapSQLObject(SQLResults[arrayCounter], SQLResults[arrayCounter]);
 				reactiveArray.push(obejct);
 			}
 		};
@@ -87,14 +87,14 @@ var log = new Logger('Lib.DB.js', Logger.level.error);
 		 * @param objectName {string} The name of the SQL object used in the logging
 		 * @return {Boolean} Returns true if a valid SQL object, false if not
 		 */
-		Lib.DB.validateSQLIO = function (SQLObject, customLog, objectName) {
+		DB.validateSQLIO = function (SQLObject, customLog, objectName) {
 			log.trace("validateSQLIO");
 
-			if (Lib.JS.isUndefined(SQLObject) || Object.keys(SQLObject).length === 0) {
+			if (JS.isUndefined(SQLObject) || Object.keys(SQLObject).length === 0) {
 				return true;
 			}
 
-			if (Lib.JS.isUndefined(SQLObject.inputs)) {
+			if (JS.isUndefined(SQLObject.inputs)) {
 				SQLObject.inputs = [];
 				return true;
 			}
@@ -113,15 +113,15 @@ var log = new Logger('Lib.DB.js', Logger.level.error);
 			for (inputCounter = 0; inputCounter < SQLObject.inputs.length; inputCounter++) {
 				//Format: {name: "", type: SQLTypes.Int, value: currentRecord.ID}
 				currentInput = SQLObject.inputs[inputCounter];
-				if (Lib.JS.isUndefined(currentInput.name)) {
+				if (JS.isUndefined(currentInput.name)) {
 					customLog.error(objectName + ".inputs: missing name property watch case: " + JSON.stringify(currentInput) + "\n must have the following format: {name: '', type: SQLTypes.Somthing, value: ''}");
 					return false;
 				}
-				if (Lib.JS.isUndefined(currentInput.type)) {
+				if (JS.isUndefined(currentInput.type)) {
 					customLog.error(objectName + ".inputs: missing type property watch case: " + JSON.stringify(currentInput) + "\n must have the following format: {name: '', type: SQLTypes.Somthing, value: ''}");
 					return false;
 				}
-				if (Lib.JS.isUndefined(currentInput.value)) {
+				if (JS.isUndefined(currentInput.value)) {
 					customLog.error(objectName + ".inputs: missing value property watch case: " + JSON.stringify(currentInput) + "\n must have the following format: {name: '', type: SQLTypes.Somthing, value: ''}");
 					return false;
 				}
@@ -141,7 +141,7 @@ var log = new Logger('Lib.DB.js', Logger.level.error);
 		 * @param inputs {array} The Inputs to use for the SP call
 		 * @param callback {function} The function to call when SP calling is complete
 		 */
-		Lib.DB.handleSQLObject = function (SQLObject, inputs, callback) {
+		DB.handleSQLObject = function (SQLObject, inputs, callback) {
 			log.trace("handleSQLObject");
 			log.trace("SQLObject:" + JSON.stringify(SQLObject));
 			log.trace("inputs:" + JSON.stringify(inputs));
@@ -154,7 +154,7 @@ var log = new Logger('Lib.DB.js', Logger.level.error);
 						return false;
 					}
 					
-					if (Lib.JS.verifyCallback(callback)) {
+					if (JS.verifyCallback(callback)) {
 						log.debug("Callback exists calling it now");
 						callback(error, result);
 					}else{
@@ -163,7 +163,7 @@ var log = new Logger('Lib.DB.js', Logger.level.error);
 				});
 			} else {
 				Meteor.call('callStoredProcedure', SQLObject.SP, inputs, {}, function (error, result) {
-					if (Lib.JS.verifyCallback(callback)) {
+					if (JS.verifyCallback(callback)) {
 						log.debug("Callback exists calling it now");
 						callback(error, result);
 					}else{
@@ -178,7 +178,7 @@ var log = new Logger('Lib.DB.js', Logger.level.error);
 		 * @param date {date} The SQL date
 		 * @return date (date) The formated date (HH:MM AMPM).
 		 */
-		Lib.DB.ExtractTimeFromSQLDate = function (date) {
+		DB.ExtractTimeFromSQLDate = function (date) {
 			log.trace("ExtractTimeFromSQLDate");
 			log.debug("date:" + date.toString());
 			
@@ -200,7 +200,7 @@ var log = new Logger('Lib.DB.js', Logger.level.error);
 		 * @param date {date} The SQL date
 		 * @return date (date) The formated date (dd/mmm/yyyy).
 		 */
-		Lib.DB.ConvertSQLDate = function (date) {
+		DB.ConvertSQLDate = function (date) {
 			log.trace("GetSQLDate");
 			log.debug("date:" + date.toString());
 
@@ -221,7 +221,7 @@ var log = new Logger('Lib.DB.js', Logger.level.error);
 		 * @param logger {logger} The logging objec to tuse if their is a problem
 		 * @return {Boolean} Returns true if all Inputs are valid, false if not
 		 */
-		Lib.DB.validateSQLInputs = function (inputs, logger) {
+		DB.validateSQLInputs = function (inputs, logger) {
 			logger.trace("validateSQLInputs");
 			//each input should have this structure {name: "ID", type: SQLTypes.Int, value: 36}
 			//can't use jquery becasue it's called server side, for now jquery is not on meteor server
@@ -235,16 +235,16 @@ var log = new Logger('Lib.DB.js', Logger.level.error);
 
 			var inputCounter = 0;
 			for (inputCounter = 0; inputCounter < inputs.length; inputCounter++) {
-				if (Lib.JS.isUndefined(inputs[inputCounter].name)) {
+				if (JS.isUndefined(inputs[inputCounter].name)) {
 					logger.error("inputs[" + inputCounter + "] Missing input.name");
 					isPass = false;
 				}
-				if (Lib.JS.isUndefined(inputs[inputCounter].type)) {
+				if (JS.isUndefined(inputs[inputCounter].type)) {
 					logger.error("inputs[" + inputCounter + "]: " + inputs[inputCounter].title + "  - Missing input.type");
 					logger.error("inputs.name: " + inputs[inputCounter].name);
 					isPass = false;
 				}
-				if (Lib.JS.isUndefined(inputs[inputCounter].value)) {
+				if (JS.isUndefined(inputs[inputCounter].value)) {
 					logger.error("inputs[" + inputCounter + "]: " + inputs[inputCounter].title + "  - Missing input.value");
 					logger.error("inputs.name: " + inputs[inputCounter].name);
 					isPass = false;
@@ -258,7 +258,7 @@ var log = new Logger('Lib.DB.js', Logger.level.error);
 		 * @param number {number} The SQL date
 		 * @return boolean - true if the number is an int
 		 */
-		Lib.DB.isInt = function (number) {
+		DB.isInt = function (number) {
 			log.trace("isInt");
 			log.trace("number:" + number);
 			
@@ -278,7 +278,7 @@ var log = new Logger('Lib.DB.js', Logger.level.error);
 		 * @param number {number} The SQL date
 		 * @return boolean - true if the number is an int
 		 */
-		Lib.DB.isDecimal = function (number) {
+		DB.isDecimal = function (number) {
 			log.trace("isDecimal");
 			log.trace("number:" + number);
 			return number === +number && number !== (number | 0);
@@ -290,7 +290,7 @@ var log = new Logger('Lib.DB.js', Logger.level.error);
 		 * @param date {date} the date to check
 		 * @return {boolean} Returns true if the date is valid, false if not
 		 */
-		Lib.DB.isDate = function (date) {
+		DB.isDate = function (date) {
 			log.trace("isDate");
 			if (Object.prototype.toString.call(date) === "[object Date]") {
 				return true;
@@ -314,16 +314,16 @@ var log = new Logger('Lib.DB.js', Logger.level.error);
 		 * @param number {number} The SQL date
 		 * @return boolean - true if the number is an int
 		 */
-		Lib.DB.isMoney = function (number) {
+		DB.isMoney = function (number) {
 			log.trace("isMoney");
 			log.trace("number:" + number);
 			log.trace(" typeofnumber:" + (typeof number).toString());
 			
-			if(Lib.DB.isInt(number)){
+			if(DB.isInt(number)){
 				return true;
 			}
-			if(Lib.DB.isDecimal(number)){
-				if(Lib.DB.countDecimals <=2){
+			if(DB.isDecimal(number)){
+				if(DB.countDecimals <=2){
 					return true;
 				}
 			}
@@ -336,7 +336,7 @@ var log = new Logger('Lib.DB.js', Logger.level.error);
 		 * @param value {object} The SQL date
 		 * @return boolean - true if the number is an string
 		 */
-		Lib.DB.isString = function (value) {
+		DB.isString = function (value) {
 			log.trace("isString");
 			log.trace("value:" + value);
 			
@@ -354,9 +354,9 @@ var log = new Logger('Lib.DB.js', Logger.level.error);
 		 * @param number {number} The SQL date
 		 * @return boolean - true if the number is an int
 		 */
-		Lib.DB.countDecimals = function(value) {
+		DB.countDecimals = function(value) {
 			if (Math.floor(value) !== value)
 				return value.toString().split(".")[1].length || 0;
 			return 0;
 		}
-module.exports = Lib;
+module.exports = DB;
