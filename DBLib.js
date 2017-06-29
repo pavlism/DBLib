@@ -1,16 +1,9 @@
-//V1.1
-
 //A library dedicated to Databse functionality
 
-if (typeof DBLib === 'undefined') {
-    var DBLib = {};
-    
-    if (typeof Lib === 'undefined') {
-            Lib = {};
-        }
+var Lib = require("pavlism-lib");
+var Logger = require("pavlism-logger");
 
-    var creation = function (Lib) {
-        var log = new Logger('Lib.DB.js', CLL.error);
+var log = new Logger('Lib.DB.js', Logger.level.error);
 
 		Lib.DB = {};
 
@@ -366,7 +359,4 @@ if (typeof DBLib === 'undefined') {
 				return value.toString().split(".")[1].length || 0;
 			return 0;
 		}
-        
-    };
-    creation.call(DBLib, Lib);
-}
+module.exports = Lib;
