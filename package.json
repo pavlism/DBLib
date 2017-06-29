@@ -1,6 +1,6 @@
 {
   "name": "pavlism-dblib",
-  "version": "1.0.10,
+  "version": "1.0.0,
   "description": "A JS Lib for dealing databases",
   "main": "DBLib.js",
   "scripts": {
